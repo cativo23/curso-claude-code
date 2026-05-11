@@ -11,6 +11,10 @@ Duración objetivo: ~60 min.
 | `presentacion.md` | Las slides (formato `slides` CLI) |
 | `cheatsheet.md` | Resumen de comandos para que los compas se lo lleven |
 | `README.md` | Esto |
+| `guion.md` | Guion del presentador (qué decir slide a slide, con ejemplos del proyecto demo) |
+| `ejemplo/task-cli/` | Proyecto demo real con skills/hooks/agents aplicados — el hilo conductor del curso |
+| `present.sh` | Lanza la presentación con banners ASCII centrados |
+| `banner.sh` | Regenera banners ASCII con figlet (fuente ANSI Shadow) |
 
 ## Cómo correr la presentación
 

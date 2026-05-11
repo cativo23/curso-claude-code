@@ -1,0 +1,13 @@
+{
+  "name": "task-cli",
+  "version": "0.1.0",
+  "description": "Mini gestor de tareas en CLI — ejemplo del curso de Claude Code",
+  "bin": {
+    "task-cli": "./src/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "license": "MIT"
+}
