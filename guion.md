@@ -23,7 +23,35 @@ task-cli rm 2                    # borra
 
 Lo usamos como sandbox para explicar cada concepto. **No vamos a programarlo en vivo** — solo lo mencionamos como ejemplo recurrente para aterrizar las ideas.
 
-Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` con un README.md de 3 líneas. Si alguien pregunta "¿dónde está el código?", lo enseñas.
+## Cómo usar el ejemplo durante la presentación
+
+**No vas a correr código en vivo.** El proyecto `ejemplo/task-cli/` existe en el repo para que tú, como presentador, **señales archivos** cuando explicas cada concepto.
+
+### Setup antes de empezar
+
+Abrí **dos paneles en tu terminal** (tmux, split, o dos ventanas):
+
+```
+┌─────────────────────────────┬─────────────────────────────┐
+│  Panel A — la presentación  │  Panel B — el código demo   │
+│                             │                             │
+│  $ ./present.sh             │  $ cd ejemplo/task-cli      │
+│                             │  $ ls -la                   │
+│  (acá vivís el 95% del time)│  (acá señalas cuando        │
+│                             │   alguien pregunta "cómo    │
+│                             │   se ve eso?")              │
+└─────────────────────────────┴─────────────────────────────┘
+```
+
+### Cuándo cambiar al panel B
+
+En cada slide donde el guion diga **"📂 Mostrar"** (verás los marcadores abajo), pasás 30 seg al panel B, abrís el archivo con `bat`/`cat`/`less`, lo señalas, volvés a la presentación.
+
+Si alguien pregunta algo que no tiene marcador "📂 Mostrar", no hace falta abrir nada — el guion te dice qué responder verbalmente.
+
+### Si querés cero overhead
+
+Si no querés manejar dos paneles, ignorá esta sección. El curso funciona igual sin abrir el código una sola vez. El ejemplo queda como **material para que los compas exploren después** clonando el repo.
 
 ---
 
@@ -88,6 +116,13 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 **Ejemplo task-cli**:
 - "Imagina una skill `/release-notes` que lee los últimos commits de task-cli y genera el changelog. La escriben una vez, la usan toda la vida."
 
+**📂 Mostrar** (opcional, panel B):
+```
+ls ejemplo/task-cli/.claude/skills/
+# agregar-tarea/  exportar-tareas/
+```
+"Mira, en task-cli ya tengo dos skills. Una para agregar, otra para exportar."
+
 **Transición**: "¿De dónde salen las skills?"
 
 ---
@@ -104,6 +139,15 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 
 **Ejemplo task-cli**:
 - "Skill `/agregar-tarea` con descripción 'crea una tarea en task-cli, úsalo cuando el usuario diga agregar/crear/anotar tarea'. Claude la invoca solo cuando matchea."
+
+**📂 Mostrar** (panel B):
+```
+cat ejemplo/task-cli/.claude/skills/agregar-tarea/SKILL.md
+```
+Señalá:
+- El frontmatter con `name`, `description`, `allowed-tools`
+- La `description` cuenta CUÁNDO usar la skill (clave para auto-invocación)
+- El `$ARGUMENTS` que recibe el texto del usuario
 
 **Transición**: "Pasemos a empaquetar varias skills juntas — plugins."
 
@@ -279,6 +323,16 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 **Ejemplo task-cli**:
 - "Si tuvieran task-cli, podrían tener un hook que valide que cada commit tenga la palabra `task-cli` en el scope. `feat(task-cli): add command`. Si no, lo bloquea."
 
+**📂 Mostrar** (panel B):
+```
+cat ejemplo/task-cli/.claude/hooks/validar-scope-commit.sh
+cat ejemplo/task-cli/.claude/settings.json
+```
+Señalá:
+- En el `.sh`: el regex que valida `(task-cli)` en el mensaje, y el `exit 2` que bloquea la tool
+- En `settings.json`: cómo se registra el hook en `PreToolUse.matcher: "Bash"`
+- "Si Claude intenta `git commit -m 'feat: nuevo'` sin scope, el hook le tira el commit."
+
 **Transición**: "Estos son los eventos completos."
 
 ---
@@ -354,6 +408,15 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 **Ejemplo task-cli**:
 - "Subagent `task-cli-tester`: 'corre los tests de task-cli y reporta fallas con stack trace'. Lo invoca el principal cuando necesita verificar."
 
+**📂 Mostrar** (panel B):
+```
+cat ejemplo/task-cli/.claude/agents/task-cli-tester.md
+```
+Señalá:
+- Frontmatter parecido al de skills, pero con `tools:` en lugar de `allowed-tools:`
+- Las instrucciones del agente: pasos específicos, sin ambigüedad
+- "Cuando el principal lo invoca, este agente arranca CON SU PROPIO contexto. No contamina el principal con la salida de los tests."
+
 **Transición**: "Pasemos al bonus rápido."
 
 ---
@@ -391,6 +454,16 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 
 **Ejemplo task-cli**:
 - "En `task-cli/CLAUDE.md` ponen: 'Este proyecto usa Node 24, TS estricto, Vitest para tests, conventional commits con scope task-cli'. Claude ya nunca pregunta."
+
+**📂 Mostrar** (panel B):
+```
+cat ejemplo/task-cli/CLAUDE.md
+```
+Señalá las 3 secciones:
+- **Stack** — qué tecnología usa
+- **Convenciones** — cómo escribir commits y tests
+- **No hacer** — los anti-patterns del proyecto
+- "Esto es lo más alto ROI del curso. 10 minutos de escribir CLAUDE.md te ahorra 100 prompts repetidos."
 
 **Transición**: "Eso fue la BASE. Ahora vamos a power-user."
 
@@ -452,6 +525,12 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 **Ejemplo task-cli**:
 - "Otra skill útil para task-cli: `/exportar-tareas` que las pasa a CSV. Una sola vez la escriben, toda la vida la usan."
 
+**📂 Mostrar** (panel B):
+```
+cat ejemplo/task-cli/.claude/skills/exportar-tareas/SKILL.md
+```
+Mostrar que es solo 20 líneas — describe el comportamiento, no implementa. Claude infiere los detalles.
+
 **Transición**: "Subagents — más poderoso porque puede correr en paralelo."
 
 ---
@@ -468,6 +547,12 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 **Ejemplo**:
 - "Yo creé este `md-reviewer` específicamente para revisar la documentación de este curso antes de presentarla."
 
+**📂 Mostrar** (panel B): el agente del ejemplo task-cli como punto de comparación.
+```
+cat ejemplo/task-cli/.claude/agents/task-cli-tester.md
+```
+"Acá tienen otro patrón: en lugar de revisar markdown, este agente corre el CLI y verifica que funcione."
+
 **Transición**: "Y el último — hooks."
 
 ---
@@ -483,6 +568,13 @@ Tip: si quieres, antes de la presentación crea una carpeta vacía `task-cli/` c
 
 **Ejemplo task-cli**:
 - "Hook que solo permite commits con scope `task-cli`. Cualquier otra cosa, bloquea."
+
+**📂 Mostrar** (panel B) — el hook real funcionando:
+```
+cat ejemplo/task-cli/.claude/hooks/validar-scope-commit.sh
+cat ejemplo/task-cli/.claude/settings.json
+```
+Repetir el punto clave: el hook recibe **JSON por stdin**, lee la tool input, devuelve **exit 2 para bloquear**. Es la API que Claude Code expone.
 
 **Transición**: "Cierre — el reto para esta semana."
 
